@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CSS Flexbox vs Grid – DevDiary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#080a0f;--surface:#111420;--surface2:#161b2e;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--accent:#00f5c4;--accent2:#6c63ff;--accent3:#ff6b6b;--text:#eaeaf5;--muted:#6b7090;--muted2:#9298b8;--font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden}
+    .mesh{position:fixed;inset:0;z-index:0;pointer-events:none}
+    .orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:0.12;animation:drift 10s ease-in-out infinite alternate}
+    .orb1{width:600px;height:600px;top:-150px;left:-100px;background:var(--accent3)}
+    .orb2{width:500px;height:500px;top:20%;right:-150px;background:var(--accent2);animation-delay:-4s}
+    @keyframes drift{0%{transform:translate(0,0)}100%{transform:translate(30px,25px)}}
+    .grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent)}
+    nav{position:fixed;top:0;left:0;width:100%;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 6%;background:rgba(8,10,15,0.8);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+    .logo{font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:var(--text);text-decoration:none;letter-spacing:-0.5px;display:flex;align-items:center;gap:0.5rem}
+    .logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+    .logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:0.2rem;list-style:none}
+    .nav-links a{color:var(--muted2);font-size:0.88rem;text-decoration:none;padding:0.4rem 0.9rem;border-radius:8px;transition:all 0.2s}
+    .nav-links a:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+    .back-btn{display:inline-flex;align-items:center;gap:0.4rem;background:transparent;border:1px solid var(--border2);color:var(--text);font-family:var(--font-body);font-size:0.85rem;padding:0.55rem 1.2rem;border-radius:10px;text-decoration:none;transition:all 0.25s}
+    .back-btn:hover{border-color:rgba(0,245,196,0.4);color:var(--accent)}
+    article{max-width:760px;margin:0 auto;padding:9rem 6% 6rem;position:relative;z-index:1}
+    .post-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.25);color:#ff8f8f;font-size:0.75rem;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;padding:0.4rem 1rem;border-radius:50px;margin-bottom:1.5rem}
+    .post-title{font-family:var(--font-head);font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-1.5px;line-height:1.1;margin-bottom:1.2rem}
+    .post-meta{display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+    .meta-item{display:flex;align-items:center;gap:0.4rem;color:var(--muted);font-size:0.85rem}
+    .post-featured-img{width:100%;height:360px;border-radius:20px;margin-bottom:2.5rem;display:flex;align-items:center;justify-content:center;font-size:6rem;background:linear-gradient(135deg,#2e0d0d,#6b1a1a);border:1px solid var(--border)}
+    .post-content h2{font-family:var(--font-head);font-size:1.5rem;font-weight:700;margin:2.5rem 0 1rem;letter-spacing:-0.5px}
+    .post-content h3{font-family:var(--font-head);font-size:1.15rem;font-weight:700;margin:2rem 0 0.8rem;color:#ff8f8f}
+    .post-content p{color:var(--muted2);line-height:1.9;margin-bottom:1.2rem;font-weight:300;font-size:1rem}
+    .post-content ul{margin:0 0 1.5rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem}
+    .post-content li{color:var(--muted2);line-height:1.7;font-weight:300}
+    .post-content li::marker{color:#ff8f8f}
+    .code-block{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin:1.5rem 0;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.8;color:var(--muted2);overflow-x:auto}
+    .kw{color:var(--accent2)} .fn{color:var(--accent)} .str{color:#ffd166}
+    .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0}
+    .compare-box{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:1.5rem}
+    .compare-box h4{font-family:var(--font-head);font-size:1rem;font-weight:700;margin-bottom:0.8rem}
+    .compare-box.flex-box h4{color:var(--accent)}
+    .compare-box.grid-box h4{color:#ff8f8f}
+    .compare-box ul{margin-left:1rem;display:flex;flex-direction:column;gap:0.4rem}
+    .compare-box li{color:var(--muted2);font-size:0.88rem;font-weight:300}
+    .tip-box{background:rgba(255,107,107,0.05);border:1px solid rgba(255,107,107,0.2);border-radius:12px;padding:1.2rem 1.5rem;margin:1.5rem 0;display:flex;gap:0.8rem;align-items:flex-start}
+    .tip-box i{color:#ff8f8f;margin-top:0.2rem;flex-shrink:0}
+    .tip-box p{color:var(--muted2);font-size:0.92rem;margin:0}
+    .post-nav{display:flex;justify-content:space-between;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem}
+    .post-nav a{display:inline-flex;align-items:center;gap:0.5rem;color:var(--muted2);text-decoration:none;font-size:0.88rem;transition:color 0.2s}
+    .post-nav a:hover{color:var(--accent)}
+    footer{border-top:1px solid var(--border);padding:2rem 6%;position:relative;z-index:1;text-align:center}
+    footer p{color:var(--muted);font-size:0.82rem}
+    footer span{color:var(--accent)}
+    @media(max-width:768px){.nav-links{display:none}article{padding:8rem 4% 4rem}.compare-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="mesh"><div class="orb orb1"></div><div class="orb orb2"></div></div>
+<div class="grid-bg"></div>
+<nav>
+  <a href="index.html" class="logo"><div class="logo-dot"></div>Dev<span>Diary</span></a>
+  <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="index.html">Blog</a></li></ul>
+  <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Blog</a>
+</nav>
+<article>
+  <span class="post-eyebrow">CSS</span>
+  <h1 class="post-title">CSS Flexbox vs Grid — Which One Should You Use?</h1>
+  <div class="post-meta">
+    <span class="meta-item"><i class="fa-regular fa-calendar"></i> June 15, 2026</span>
+    <span class="meta-item"><i class="fa-regular fa-clock"></i> 5 min read</span>
+    <span class="meta-item"><i class="fa-solid fa-user"></i> DevDiary Team</span>
+  </div>
+  <div class="post-featured-img">🎨</div>
+  <div class="post-content">
+    <p>Flexbox and Grid are two of the most powerful CSS layout tools available today. Both can help you build modern, responsive layouts — but they serve different purposes. Let's break them down!</p>
+
+    <h2>Quick Comparison</h2>
+    <div class="compare-grid">
+      <div class="compare-box flex-box">
+        <h4>⚡ Flexbox</h4>
+        <ul>
+          <li>One-dimensional (row OR column)</li>
+          <li>Great for navbars, buttons</li>
+          <li>Aligns items in a line</li>
+          <li>Content-first layout</li>
+        </ul>
+      </div>
+      <div class="compare-box grid-box">
+        <h4>🔲 CSS Grid</h4>
+        <ul>
+          <li>Two-dimensional (rows AND columns)</li>
+          <li>Great for page layouts, cards</li>
+          <li>Precise placement control</li>
+          <li>Layout-first design</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>Flexbox — Best For Line Layouts</h2>
+    <div class="code-block">
+<span class="cm">/* Flexbox navbar */</span>
+<span class="kw">nav</span> {
+  display: <span class="str">flex</span>;
+  align-items: <span class="str">center</span>;
+  justify-content: <span class="str">space-between</span>;
+  gap: <span class="str">1rem</span>;
+}
+
+<span class="cm">/* Center anything with Flexbox */</span>
+<span class="kw">.hero</span> {
+  display: <span class="str">flex</span>;
+  flex-direction: <span class="str">column</span>;
+  align-items: <span class="str">center</span>;
+  justify-content: <span class="str">center</span>;
+  min-height: <span class="str">100vh</span>;
+}
+    </div>
+
+    <h2>CSS Grid — Best For Page Layouts</h2>
+    <div class="code-block">
+<span class="cm">/* Simple 3-column card grid */</span>
+<span class="kw">.cards</span> {
+  display: <span class="str">grid</span>;
+  grid-template-columns: <span class="str">repeat(3, 1fr)</span>;
+  gap: <span class="str">1.5rem</span>;
+}
+
+<span class="cm">/* Responsive grid — auto adjusts columns */</span>
+<span class="kw">.cards</span> {
+  display: <span class="str">grid</span>;
+  grid-template-columns: <span class="str">repeat(auto-fit, minmax(280px, 1fr))</span>;
+  gap: <span class="str">1.5rem</span>;
+}
+    </div>
+
+    <div class="tip-box">
+      <i class="fa-solid fa-lightbulb"></i>
+      <p><strong style="color:var(--text)">Simple Rule:</strong> Use <strong>Flexbox</strong> when you need to align items in a single row or column. Use <strong>Grid</strong> when you need a full 2D layout with rows AND columns.</p>
+    </div>
+
+    <h2>Can You Use Both Together?</h2>
+    <p>Absolutely! In fact, most modern websites use Grid for the overall page layout and Flexbox for smaller components inside. They work perfectly together.</p>
+
+    <ul>
+      <li>Grid for overall page layout (header, sidebar, main, footer)</li>
+      <li>Flexbox for navbar items, buttons, card footers</li>
+      <li>Grid for card galleries and blog post grids</li>
+      <li>Flexbox for centering icons and text inside cards</li>
+    </ul>
+
+    <p>The best developer knows when to use which tool. Practice building layouts with both and you'll quickly develop an instinct for it! 🎨</p>
+  </div>
+  <div class="post-nav">
+    <a href="blog2.html"><i class="fa-solid fa-arrow-left"></i> Previous Post</a>
+    <a href="blog4.html">Next Post <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+</article>
+<footer><p>© 2026 <span>DevDiary</span>. All rights reserved.</p></footer>
+</body>
+</html>

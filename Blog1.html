@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Getting Started with HTML & CSS – DevDiary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#080a0f;--surface:#111420;--surface2:#161b2e;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--accent:#00f5c4;--accent2:#6c63ff;--text:#eaeaf5;--muted:#6b7090;--muted2:#9298b8;--font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden}
+    .mesh{position:fixed;inset:0;z-index:0;pointer-events:none}
+    .orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:0.12;animation:drift 10s ease-in-out infinite alternate}
+    .orb1{width:600px;height:600px;top:-150px;left:-100px;background:var(--accent2)}
+    .orb2{width:500px;height:500px;top:20%;right:-150px;background:var(--accent);animation-delay:-4s}
+    @keyframes drift{0%{transform:translate(0,0)}100%{transform:translate(30px,25px)}}
+    .grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent)}
+    nav{position:fixed;top:0;left:0;width:100%;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 6%;background:rgba(8,10,15,0.8);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+    .logo{font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:var(--text);text-decoration:none;letter-spacing:-0.5px;display:flex;align-items:center;gap:0.5rem}
+    .logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+    .logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:0.2rem;list-style:none}
+    .nav-links a{color:var(--muted2);font-size:0.88rem;text-decoration:none;padding:0.4rem 0.9rem;border-radius:8px;transition:all 0.2s}
+    .nav-links a:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+    .back-btn{display:inline-flex;align-items:center;gap:0.4rem;background:transparent;border:1px solid var(--border2);color:var(--text);font-family:var(--font-body);font-size:0.85rem;font-weight:500;padding:0.55rem 1.2rem;border-radius:10px;text-decoration:none;transition:all 0.25s}
+    .back-btn:hover{border-color:rgba(0,245,196,0.4);color:var(--accent)}
+
+    article{max-width:760px;margin:0 auto;padding:9rem 6% 6rem;position:relative;z-index:1}
+
+    .post-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(0,245,196,0.06);border:1px solid rgba(0,245,196,0.2);color:var(--accent);font-size:0.75rem;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;padding:0.4rem 1rem;border-radius:50px;margin-bottom:1.5rem}
+    .post-title{font-family:var(--font-head);font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-1.5px;line-height:1.1;margin-bottom:1.2rem}
+    .post-meta{display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+    .meta-item{display:flex;align-items:center;gap:0.4rem;color:var(--muted);font-size:0.85rem}
+
+    .post-featured-img{width:100%;height:360px;border-radius:20px;margin-bottom:2.5rem;display:flex;align-items:center;justify-content:center;font-size:6rem;background:linear-gradient(135deg,#0d1b3e,#1a3a6b);border:1px solid var(--border)}
+
+    .post-content h2{font-family:var(--font-head);font-size:1.5rem;font-weight:700;margin:2.5rem 0 1rem;letter-spacing:-0.5px}
+    .post-content h3{font-family:var(--font-head);font-size:1.15rem;font-weight:700;margin:2rem 0 0.8rem;color:var(--accent)}
+    .post-content p{color:var(--muted2);line-height:1.9;margin-bottom:1.2rem;font-weight:300;font-size:1rem}
+    .post-content ul{margin:0 0 1.5rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem}
+    .post-content li{color:var(--muted2);line-height:1.7;font-weight:300}
+    .post-content li::marker{color:var(--accent)}
+
+    .code-block{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin:1.5rem 0;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.8;color:var(--muted2);overflow-x:auto}
+    .kw{color:var(--accent2)} .tg{color:var(--accent)} .at{color:#ffd166} .str{color:#ff8f8f}
+
+    .tip-box{background:rgba(0,245,196,0.05);border:1px solid rgba(0,245,196,0.2);border-radius:12px;padding:1.2rem 1.5rem;margin:1.5rem 0;display:flex;gap:0.8rem;align-items:flex-start}
+    .tip-box i{color:var(--accent);margin-top:0.2rem;flex-shrink:0}
+    .tip-box p{color:var(--muted2);font-size:0.92rem;margin:0}
+
+    .post-nav{display:flex;justify-content:space-between;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem}
+    .post-nav a{display:inline-flex;align-items:center;gap:0.5rem;color:var(--muted2);text-decoration:none;font-size:0.88rem;transition:color 0.2s}
+    .post-nav a:hover{color:var(--accent)}
+
+    footer{border-top:1px solid var(--border);padding:2rem 6%;position:relative;z-index:1;text-align:center}
+    footer p{color:var(--muted);font-size:0.82rem}
+    footer span{color:var(--accent)}
+
+    @media(max-width:768px){.nav-links{display:none}article{padding:8rem 4% 4rem}}
+  </style>
+</head>
+<body>
+<div class="mesh"><div class="orb orb1"></div><div class="orb orb2"></div></div>
+<div class="grid-bg"></div>
+
+<nav>
+  <a href="index.html" class="logo"><div class="logo-dot"></div>Dev<span>Diary</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html">Blog</a></li>
+  </ul>
+  <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Blog</a>
+</nav>
+
+<article>
+  <span class="post-eyebrow">HTML & CSS</span>
+  <h1 class="post-title">Getting Started with HTML & CSS — A Beginner's Complete Guide</h1>
+  <div class="post-meta">
+    <span class="meta-item"><i class="fa-regular fa-calendar"></i> June 1, 2026</span>
+    <span class="meta-item"><i class="fa-regular fa-clock"></i> 8 min read</span>
+    <span class="meta-item"><i class="fa-solid fa-user"></i> DevDiary Team</span>
+  </div>
+
+  <div class="post-featured-img">🌐</div>
+
+  <div class="post-content">
+    <p>HTML and CSS are the foundation of every single website on the internet. Whether you want to become a professional developer or just build your own blog, learning HTML and CSS is the very first step. In this guide, we'll cover everything a complete beginner needs to know.</p>
+
+    <h2>What is HTML?</h2>
+    <p>HTML stands for <strong style="color:var(--text)">HyperText Markup Language</strong>. It's the skeleton of every webpage — it defines the structure and content. Think of it like the walls and rooms of a house.</p>
+
+    <div class="code-block">
+<span class="tg">&lt;!DOCTYPE html&gt;</span>
+<span class="tg">&lt;html&gt;</span>
+  <span class="tg">&lt;head&gt;</span>
+    <span class="tg">&lt;title&gt;</span>My First Page<span class="tg">&lt;/title&gt;</span>
+  <span class="tg">&lt;/head&gt;</span>
+  <span class="tg">&lt;body&gt;</span>
+    <span class="tg">&lt;h1&gt;</span>Hello World!<span class="tg">&lt;/h1&gt;</span>
+    <span class="tg">&lt;p&gt;</span>This is my first webpage.<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;/body&gt;</span>
+<span class="tg">&lt;/html&gt;</span>
+    </div>
+
+    <h2>What is CSS?</h2>
+    <p>CSS stands for <strong style="color:var(--text)">Cascading Style Sheets</strong>. It's the styling layer — it makes your HTML look beautiful. Think of CSS as the paint, furniture, and decorations of the house.</p>
+
+    <div class="code-block">
+<span class="kw">body</span> {
+  background-color: <span class="str">#080a0f</span>;
+  color: <span class="str">#eaeaf5</span>;
+  font-family: <span class="str">'DM Sans'</span>, sans-serif;
+}
+
+<span class="kw">h1</span> {
+  font-size: <span class="str">3rem</span>;
+  color: <span class="str">#00f5c4</span>;
+}
+    </div>
+
+    <h2>Key HTML Tags You Must Know</h2>
+    <ul>
+      <li><strong style="color:var(--accent)">&lt;h1&gt; to &lt;h6&gt;</strong> — Headings (h1 is biggest)</li>
+      <li><strong style="color:var(--accent)">&lt;p&gt;</strong> — Paragraph text</li>
+      <li><strong style="color:var(--accent)">&lt;a&gt;</strong> — Links (anchor tags)</li>
+      <li><strong style="color:var(--accent)">&lt;img&gt;</strong> — Images</li>
+      <li><strong style="color:var(--accent)">&lt;div&gt;</strong> — Container / block element</li>
+      <li><strong style="color:var(--accent)">&lt;section&gt;</strong> — Semantic section of a page</li>
+      <li><strong style="color:var(--accent)">&lt;nav&gt;</strong> — Navigation bar</li>
+    </ul>
+
+    <div class="tip-box">
+      <i class="fa-solid fa-lightbulb"></i>
+      <p><strong style="color:var(--text)">Pro Tip:</strong> Always use semantic HTML tags like &lt;header&gt;, &lt;main&gt;, &lt;footer&gt; instead of just &lt;div&gt; for everything. It makes your code cleaner and better for SEO.</p>
+    </div>
+
+    <h2>CSS Box Model</h2>
+    <p>Every HTML element is a box. The CSS Box Model describes how the element's size is calculated — content, padding, border, and margin all play a role.</p>
+
+    <h3>Responsive Design</h3>
+    <p>Modern websites must look good on all screen sizes. Use CSS media queries to adapt your layout for mobile devices.</p>
+
+    <div class="code-block">
+<span class="kw">@media</span> (max-width: <span class="str">768px</span>) {
+  .hero h1 {
+    font-size: <span class="str">2rem</span>;
+  }
+  .nav-links {
+    display: <span class="str">none</span>;
+  }
+}
+    </div>
+
+    <h2>What to Learn Next?</h2>
+    <ul>
+      <li>CSS Flexbox and Grid for layouts</li>
+      <li>JavaScript for interactivity</li>
+      <li>Google Fonts and Font Awesome for styling</li>
+      <li>GitHub Pages for hosting your site for free</li>
+    </ul>
+
+    <p>That's it! You now have a solid foundation in HTML and CSS. The best way to learn is to keep building — start with a simple page and keep improving it every day. 🚀</p>
+  </div>
+
+  <div class="post-nav">
+    <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to All Posts</a>
+    <a href="blog2.html">Next Post <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+</article>
+
+<footer><p>© 2026 <span>DevDiary</span>. All rights reserved.</p></footer>
+
+</body>
+</html>

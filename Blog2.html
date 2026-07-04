@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JavaScript DOM Manipulation – DevDiary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#080a0f;--surface:#111420;--surface2:#161b2e;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--accent:#00f5c4;--accent2:#6c63ff;--text:#eaeaf5;--muted:#6b7090;--muted2:#9298b8;--font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden}
+    .mesh{position:fixed;inset:0;z-index:0;pointer-events:none}
+    .orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:0.12;animation:drift 10s ease-in-out infinite alternate}
+    .orb1{width:600px;height:600px;top:-150px;left:-100px;background:var(--accent2)}
+    .orb2{width:500px;height:500px;top:20%;right:-150px;background:var(--accent);animation-delay:-4s}
+    @keyframes drift{0%{transform:translate(0,0)}100%{transform:translate(30px,25px)}}
+    .grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent)}
+    nav{position:fixed;top:0;left:0;width:100%;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 6%;background:rgba(8,10,15,0.8);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+    .logo{font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:var(--text);text-decoration:none;letter-spacing:-0.5px;display:flex;align-items:center;gap:0.5rem}
+    .logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+    .logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:0.2rem;list-style:none}
+    .nav-links a{color:var(--muted2);font-size:0.88rem;text-decoration:none;padding:0.4rem 0.9rem;border-radius:8px;transition:all 0.2s}
+    .nav-links a:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+    .back-btn{display:inline-flex;align-items:center;gap:0.4rem;background:transparent;border:1px solid var(--border2);color:var(--text);font-family:var(--font-body);font-size:0.85rem;padding:0.55rem 1.2rem;border-radius:10px;text-decoration:none;transition:all 0.25s}
+    .back-btn:hover{border-color:rgba(0,245,196,0.4);color:var(--accent)}
+    article{max-width:760px;margin:0 auto;padding:9rem 6% 6rem;position:relative;z-index:1}
+    .post-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.25);color:#9d97ff;font-size:0.75rem;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;padding:0.4rem 1rem;border-radius:50px;margin-bottom:1.5rem}
+    .post-title{font-family:var(--font-head);font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-1.5px;line-height:1.1;margin-bottom:1.2rem}
+    .post-meta{display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+    .meta-item{display:flex;align-items:center;gap:0.4rem;color:var(--muted);font-size:0.85rem}
+    .post-featured-img{width:100%;height:360px;border-radius:20px;margin-bottom:2.5rem;display:flex;align-items:center;justify-content:center;font-size:6rem;background:linear-gradient(135deg,#1a0d2e,#3d1a6b);border:1px solid var(--border)}
+    .post-content h2{font-family:var(--font-head);font-size:1.5rem;font-weight:700;margin:2.5rem 0 1rem;letter-spacing:-0.5px}
+    .post-content h3{font-family:var(--font-head);font-size:1.15rem;font-weight:700;margin:2rem 0 0.8rem;color:#9d97ff}
+    .post-content p{color:var(--muted2);line-height:1.9;margin-bottom:1.2rem;font-weight:300;font-size:1rem}
+    .post-content ul{margin:0 0 1.5rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem}
+    .post-content li{color:var(--muted2);line-height:1.7;font-weight:300}
+    .post-content li::marker{color:#9d97ff}
+    .code-block{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin:1.5rem 0;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.8;color:var(--muted2);overflow-x:auto}
+    .kw{color:var(--accent2)} .fn{color:var(--accent)} .str{color:#ffd166} .cm{color:var(--muted)}
+    .tip-box{background:rgba(108,99,255,0.05);border:1px solid rgba(108,99,255,0.2);border-radius:12px;padding:1.2rem 1.5rem;margin:1.5rem 0;display:flex;gap:0.8rem;align-items:flex-start}
+    .tip-box i{color:#9d97ff;margin-top:0.2rem;flex-shrink:0}
+    .tip-box p{color:var(--muted2);font-size:0.92rem;margin:0}
+    .post-nav{display:flex;justify-content:space-between;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem}
+    .post-nav a{display:inline-flex;align-items:center;gap:0.5rem;color:var(--muted2);text-decoration:none;font-size:0.88rem;transition:color 0.2s}
+    .post-nav a:hover{color:var(--accent)}
+    footer{border-top:1px solid var(--border);padding:2rem 6%;position:relative;z-index:1;text-align:center}
+    footer p{color:var(--muted);font-size:0.82rem}
+    footer span{color:var(--accent)}
+    @media(max-width:768px){.nav-links{display:none}article{padding:8rem 4% 4rem}}
+  </style>
+</head>
+<body>
+<div class="mesh"><div class="orb orb1"></div><div class="orb orb2"></div></div>
+<div class="grid-bg"></div>
+<nav>
+  <a href="index.html" class="logo"><div class="logo-dot"></div>Dev<span>Diary</span></a>
+  <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="index.html">Blog</a></li></ul>
+  <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Blog</a>
+</nav>
+<article>
+  <span class="post-eyebrow">JavaScript</span>
+  <h1 class="post-title">JavaScript DOM Manipulation for Beginners</h1>
+  <div class="post-meta">
+    <span class="meta-item"><i class="fa-regular fa-calendar"></i> June 8, 2026</span>
+    <span class="meta-item"><i class="fa-regular fa-clock"></i> 6 min read</span>
+    <span class="meta-item"><i class="fa-solid fa-user"></i> DevDiary Team</span>
+  </div>
+  <div class="post-featured-img">⚡</div>
+  <div class="post-content">
+    <p>The DOM (Document Object Model) is the key to making websites interactive. When you click a button, submit a form, or see a dropdown menu — that's all JavaScript manipulating the DOM. Let's learn how it works!</p>
+
+    <h2>What is the DOM?</h2>
+    <p>The DOM is a tree-like representation of your HTML. Every HTML tag becomes a "node" in the tree. JavaScript can read, change, add, or delete any of these nodes in real time.</p>
+
+    <h2>Selecting Elements</h2>
+    <div class="code-block">
+<span class="cm">// By ID</span>
+<span class="kw">const</span> title = <span class="fn">document.getElementById</span>(<span class="str">'myTitle'</span>);
+
+<span class="cm">// By class</span>
+<span class="kw">const</span> cards = <span class="fn">document.querySelectorAll</span>(<span class="str">'.card'</span>);
+
+<span class="cm">// By tag</span>
+<span class="kw">const</span> buttons = <span class="fn">document.querySelectorAll</span>(<span class="str">'button'</span>);
+    </div>
+
+    <h2>Changing Content & Style</h2>
+    <div class="code-block">
+<span class="cm">// Change text</span>
+title.textContent = <span class="str">'New Title!'</span>;
+
+<span class="cm">// Change style</span>
+title.style.color = <span class="str">'#00f5c4'</span>;
+title.style.fontSize = <span class="str">'3rem'</span>;
+
+<span class="cm">// Add/remove CSS class</span>
+title.<span class="fn">classList.add</span>(<span class="str">'active'</span>);
+title.<span class="fn">classList.remove</span>(<span class="str">'hidden'</span>);
+title.<span class="fn">classList.toggle</span>(<span class="str">'dark'</span>);
+    </div>
+
+    <h2>Event Listeners</h2>
+    <p>Event listeners let you run code when something happens — a click, hover, scroll, or keypress.</p>
+    <div class="code-block">
+<span class="kw">const</span> btn = <span class="fn">document.getElementById</span>(<span class="str">'myBtn'</span>);
+
+btn.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, <span class="kw">function</span>() {
+  <span class="fn">alert</span>(<span class="str">'Button clicked!'</span>);
+});
+
+<span class="cm">// Scroll event</span>
+<span class="fn">window.addEventListener</span>(<span class="str">'scroll'</span>, () => {
+  <span class="kw">if</span> (window.scrollY > <span class="str">50</span>) {
+    navbar.<span class="fn">classList.add</span>(<span class="str">'scrolled'</span>);
+  }
+});
+    </div>
+
+    <div class="tip-box">
+      <i class="fa-solid fa-lightbulb"></i>
+      <p><strong style="color:var(--text)">Pro Tip:</strong> Use <code style="color:#9d97ff">addEventListener</code> instead of inline onclick handlers. It keeps your HTML clean and your JS organized!</p>
+    </div>
+
+    <h2>Creating & Removing Elements</h2>
+    <div class="code-block">
+<span class="cm">// Create new element</span>
+<span class="kw">const</span> newDiv = <span class="fn">document.createElement</span>(<span class="str">'div'</span>);
+newDiv.textContent = <span class="str">'I was created by JS!'</span>;
+newDiv.<span class="fn">classList.add</span>(<span class="str">'card'</span>);
+
+<span class="cm">// Add to page</span>
+<span class="fn">document.body.appendChild</span>(newDiv);
+
+<span class="cm">// Remove element</span>
+newDiv.<span class="fn">remove</span>();
+    </div>
+
+    <h2>Key Things to Remember</h2>
+    <ul>
+      <li>DOM manipulation runs in the browser — no server needed</li>
+      <li>Always select elements before trying to change them</li>
+      <li>Use <code style="color:#9d97ff">console.log()</code> to debug your code</li>
+      <li>The DOM updates instantly — users see changes right away</li>
+    </ul>
+
+    <p>Now you know the basics of DOM manipulation! Practice by building a to-do list app, a dark mode toggle, or a form validator. These are classic beginner JavaScript projects. 🚀</p>
+  </div>
+  <div class="post-nav">
+    <a href="blog1.html"><i class="fa-solid fa-arrow-left"></i> Previous Post</a>
+    <a href="blog3.html">Next Post <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+</article>
+<footer><p>© 2026 <span>DevDiary</span>. All rights reserved.</p></footer>
+</body>
+</html>

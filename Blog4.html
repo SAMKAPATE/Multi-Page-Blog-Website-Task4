@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Host Free on GitHub Pages – DevDiary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#080a0f;--surface:#111420;--surface2:#161b2e;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--accent:#00f5c4;--accent2:#6c63ff;--gold:#ffd166;--text:#eaeaf5;--muted:#6b7090;--muted2:#9298b8;--font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden}
+    .mesh{position:fixed;inset:0;z-index:0;pointer-events:none}
+    .orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:0.12;animation:drift 10s ease-in-out infinite alternate}
+    .orb1{width:600px;height:600px;top:-150px;left:-100px;background:#2a1a00}
+    .orb2{width:500px;height:500px;top:20%;right:-150px;background:var(--accent);animation-delay:-4s}
+    @keyframes drift{0%{transform:translate(0,0)}100%{transform:translate(30px,25px)}}
+    .grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent)}
+    nav{position:fixed;top:0;left:0;width:100%;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 6%;background:rgba(8,10,15,0.8);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+    .logo{font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:var(--text);text-decoration:none;letter-spacing:-0.5px;display:flex;align-items:center;gap:0.5rem}
+    .logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+    .logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:0.2rem;list-style:none}
+    .nav-links a{color:var(--muted2);font-size:0.88rem;text-decoration:none;padding:0.4rem 0.9rem;border-radius:8px;transition:all 0.2s}
+    .nav-links a:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+    .back-btn{display:inline-flex;align-items:center;gap:0.4rem;background:transparent;border:1px solid var(--border2);color:var(--text);font-family:var(--font-body);font-size:0.85rem;padding:0.55rem 1.2rem;border-radius:10px;text-decoration:none;transition:all 0.25s}
+    .back-btn:hover{border-color:rgba(0,245,196,0.4);color:var(--accent)}
+    article{max-width:760px;margin:0 auto;padding:9rem 6% 6rem;position:relative;z-index:1}
+    .post-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,209,102,0.08);border:1px solid rgba(255,209,102,0.25);color:var(--gold);font-size:0.75rem;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;padding:0.4rem 1rem;border-radius:50px;margin-bottom:1.5rem}
+    .post-title{font-family:var(--font-head);font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-1.5px;line-height:1.1;margin-bottom:1.2rem}
+    .post-meta{display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+    .meta-item{display:flex;align-items:center;gap:0.4rem;color:var(--muted);font-size:0.85rem}
+    .post-featured-img{width:100%;height:360px;border-radius:20px;margin-bottom:2.5rem;display:flex;align-items:center;justify-content:center;font-size:6rem;background:linear-gradient(135deg,#0d2e1a,#1a6b3d);border:1px solid var(--border)}
+    .post-content h2{font-family:var(--font-head);font-size:1.5rem;font-weight:700;margin:2.5rem 0 1rem;letter-spacing:-0.5px}
+    .post-content h3{font-family:var(--font-head);font-size:1.15rem;font-weight:700;margin:2rem 0 0.8rem;color:var(--gold)}
+    .post-content p{color:var(--muted2);line-height:1.9;margin-bottom:1.2rem;font-weight:300;font-size:1rem}
+    .post-content ul{margin:0 0 1.5rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem}
+    .post-content li{color:var(--muted2);line-height:1.7;font-weight:300}
+    .post-content li::marker{color:var(--gold)}
+    .code-block{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin:1.5rem 0;font-family:'Courier New',monospace;font-size:0.85rem;line-height:1.8;color:var(--muted2);overflow-x:auto}
+    .kw{color:var(--accent2)} .fn{color:var(--accent)} .str{color:var(--gold)}
+    .step-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin:1rem 0;display:flex;gap:1rem;align-items:flex-start}
+    .step-num{width:36px;height:36px;border-radius:10px;background:rgba(0,245,196,0.1);color:var(--accent);font-family:var(--font-head);font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .step-content h4{font-family:var(--font-head);font-size:0.95rem;font-weight:700;margin-bottom:0.4rem}
+    .step-content p{color:var(--muted2);font-size:0.88rem;line-height:1.7;margin:0;font-weight:300}
+    .tip-box{background:rgba(255,209,102,0.05);border:1px solid rgba(255,209,102,0.2);border-radius:12px;padding:1.2rem 1.5rem;margin:1.5rem 0;display:flex;gap:0.8rem;align-items:flex-start}
+    .tip-box i{color:var(--gold);margin-top:0.2rem;flex-shrink:0}
+    .tip-box p{color:var(--muted2);font-size:0.92rem;margin:0}
+    .post-nav{display:flex;justify-content:space-between;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem}
+    .post-nav a{display:inline-flex;align-items:center;gap:0.5rem;color:var(--muted2);text-decoration:none;font-size:0.88rem;transition:color 0.2s}
+    .post-nav a:hover{color:var(--accent)}
+    footer{border-top:1px solid var(--border);padding:2rem 6%;position:relative;z-index:1;text-align:center}
+    footer p{color:var(--muted);font-size:0.82rem}
+    footer span{color:var(--accent)}
+    @media(max-width:768px){.nav-links{display:none}article{padding:8rem 4% 4rem}}
+  </style>
+</head>
+<body>
+<div class="mesh"><div class="orb orb1"></div><div class="orb orb2"></div></div>
+<div class="grid-bg"></div>
+<nav>
+  <a href="index.html" class="logo"><div class="logo-dot"></div>Dev<span>Diary</span></a>
+  <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="index.html">Blog</a></li></ul>
+  <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Blog</a>
+</nav>
+<article>
+  <span class="post-eyebrow">GitHub</span>
+  <h1 class="post-title">How to Host Your Website for Free on GitHub Pages</h1>
+  <div class="post-meta">
+    <span class="meta-item"><i class="fa-regular fa-calendar"></i> June 22, 2026</span>
+    <span class="meta-item"><i class="fa-regular fa-clock"></i> 4 min read</span>
+    <span class="meta-item"><i class="fa-solid fa-user"></i> DevDiary Team</span>
+  </div>
+  <div class="post-featured-img">🚀</div>
+  <div class="post-content">
+    <p>You've built your portfolio or blog website — now it's time to show it to the world! GitHub Pages is the easiest and most popular free hosting platform for static websites. Let's deploy your site in under 10 minutes!</p>
+
+    <h2>What is GitHub Pages?</h2>
+    <p>GitHub Pages is a free hosting service by GitHub. It takes your HTML, CSS, and JavaScript files from a GitHub repository and serves them as a live website. No server setup, no cost — just push your code and it's live!</p>
+
+    <div class="tip-box">
+      <i class="fa-brands fa-github"></i>
+      <p><strong style="color:var(--text)">Perfect for:</strong> Personal portfolios, blog websites, project pages, internship task submissions — anything built with HTML, CSS and JavaScript!</p>
+    </div>
+
+    <h2>Step-by-Step Guide</h2>
+
+    <div class="step-box">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Create a GitHub Account</h4>
+        <p>Go to <strong style="color:var(--accent)">github.com</strong> and sign up for a free account if you don't have one already.</p>
+      </div>
+    </div>
+
+    <div class="step-box">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Create a New Repository</h4>
+        <p>Click the "+" icon → "New repository". Name it <strong style="color:var(--gold)">your-username.github.io</strong> for a personal site, or any name for a project site.</p>
+      </div>
+    </div>
+
+    <div class="step-box">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>Upload Your Files</h4>
+        <p>Click "Add file" → "Upload files". Drag and drop your <strong style="color:var(--accent)">index.html</strong>, CSS, JS files. Make sure index.html is in the root folder!</p>
+      </div>
+    </div>
+
+    <div class="step-box">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h4>Enable GitHub Pages</h4>
+        <p>Go to Settings → Pages → Source → Select "main" branch → Save. GitHub will give you a live URL in seconds!</p>
+      </div>
+    </div>
+
+    <div class="step-box">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h4>Your Site is Live! 🎉</h4>
+        <p>Your website will be live at <strong style="color:var(--gold)">https://your-username.github.io/repo-name</strong>. Share it anywhere!</p>
+      </div>
+    </div>
+
+    <h2>Using Git Commands (Optional)</h2>
+    <div class="code-block">
+<span class="cm"># Initialize git in your project folder</span>
+git init
+git add .
+git commit -m <span class="str">"first commit"</span>
+
+<span class="cm"># Connect to GitHub repo</span>
+git remote add origin https://github.com/username/repo.git
+
+<span class="cm"># Push to GitHub</span>
+git push -u origin main
+    </div>
+
+    <h2>Tips for a Better GitHub Profile</h2>
+    <ul>
+      <li>Always add a <strong style="color:var(--text)">README.md</strong> to explain your project</li>
+      <li>Use clear commit messages — "add hero section" not just "update"</li>
+      <li>Pin your best repositories on your profile</li>
+      <li>Keep your profile photo and bio updated</li>
+    </ul>
+
+    <p>That's it! Your website is now live on the internet for anyone to see. Share your GitHub Pages link on LinkedIn, add it to your resume, and include it in your internship submissions. 🚀</p>
+  </div>
+  <div class="post-nav">
+    <a href="blog3.html"><i class="fa-solid fa-arrow-left"></i> Previous Post</a>
+    <a href="index.html">Back to Home <i class="fa-solid fa-house"></i></a>
+  </div>
+</article>
+<footer><p>© 2026 <span>DevDiary</span>. All rights reserved.</p></footer>
+</body>
+</html>
